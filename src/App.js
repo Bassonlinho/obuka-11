@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import users from "./users/users.json";
 import AddUsers from "./users/AddUsers";
-import ViewUser from "./users/ViewUser";
+import ListOfUsers from "./users/ListOfUsers";
 //bila je function,menjali smo u klasu zbog lifecycles
 export default class App extends React.Component {
   constructor(props) {
@@ -50,7 +50,29 @@ export default class App extends React.Component {
     //array.shift, array.unshift
     // mozes se koristiti i za nizove i za objekte, u slucaju objekata mozes koristiti i Object.assign
     // newUser = {...user, id: 10}
-    users = [user, ...users];
+    let userData;
+    //da li user objekat ima ID property, moze se pisati i if(Object(user).hasOwnProperty(id)),
+    // if(user.id !== undefined)
+    if (!user.id) {
+      // userData = Object.assign({id: Math.random() + 15}, user)
+      userData = {
+        id: Math.random() + 15,
+        ...user,
+      };
+      users = [...users, userData];
+    } else {
+      userData = user;
+      users = users.map((item) => {
+        if (item.id === userData.id) {
+          item = userData;
+          return item;
+        }
+        return item;
+      });
+      // moze i na ovaj nacin, ili da se izvlaci index iz array.map-a
+      // const indexOfUser = users.findIndex(userData);
+      // users[indexOfUser] = userData;
+    }
     // users.push(user)
     // users.unshift(user)
     // const newUsers = [user, ...users];
@@ -59,7 +81,7 @@ export default class App extends React.Component {
     });
   };
 
-  onViewUser = (user) => {
+  onClickUser = (user) => {
     this.setState({
       user,
     });
@@ -73,27 +95,8 @@ export default class App extends React.Component {
     } else {
       content = (
         <div className="App">
-          {(users.length &&
-            users.map((item) => {
-              const { name, lastName } = item;
-              return (
-                <div className="user">
-                  <div className="username">{name + " " + lastName}</div>
-                  <button onClick={() => this.onViewUser(item)}>View</button>
-                </div>
-              );
-            })) ||
-            null}
-          {/* kako se prosledjuje children komponenti */}
-          {user === null ? (
-            <AddUsers onAddUser={this.onAddUserFunction}>hehehehehehe</AddUsers>
-          ) : (
-            <ViewUser user={user} />
-          )}
-          {/* clear stanje usera */}
-          <button onClick={() => this.setState({ user: null })}>
-            Clear user Value
-          </button>
+          <ListOfUsers users={users} onClickUser={this.onClickUser} />
+          <AddUsers user={user} onAddUser={this.onAddUserFunction} />
         </div>
       );
     }

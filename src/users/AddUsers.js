@@ -10,15 +10,16 @@ export default class AddUsers extends React.Component {
       },
     };
   }
+
   // primer kako komponenta hendluje promenu propertija ukoliko se u parentu desi promena
-  //   componentDidUpdate(prevProps, prevState) {
-  //     const { user } = this.props;
-  //     if (prevProps.user !== user) {
-  //       this.setState({
-  //         user: user,
-  //       });
-  //     }
-  //   }
+  componentDidUpdate(prevProps, prevState) {
+    const { user } = this.props;
+    if (prevProps.user !== user) {
+      this.setState({
+        user: user,
+      });
+    }
+  }
 
   handleChange = (name, value) => {
     let { user } = this.state;
@@ -31,7 +32,12 @@ export default class AddUsers extends React.Component {
   handleAddUser = () => {
     const { user } = this.state;
     const { onAddUser } = this.props;
+    //kada dodajemo novog usera on nema ID polje i proveravamo da li ono postoji
+    // if (user.id) {
+    //   onUpdateUser(user)
+    // } else {
     onAddUser(user);
+    // }
     this.setState({
       user: {
         name: "",
@@ -58,7 +64,9 @@ export default class AddUsers extends React.Component {
           value={user.lastName}
           onChange={(e) => this.handleChange("lastName", e.target.value)}
         />
-        <Button onClick={() => this.handleAddUser()}>Add</Button>
+        <Button onClick={() => this.handleAddUser()}>
+          {user.id ? "Edit" : "Add"}
+        </Button>
       </div>
     );
   }
