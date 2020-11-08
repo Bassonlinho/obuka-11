@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField, Button } from "@material-ui/core";
-export default class AddUsers extends React.Component {
+class AddUsers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -71,3 +71,5 @@ export default class AddUsers extends React.Component {
     );
   }
 }
+
+export default AddUsers;

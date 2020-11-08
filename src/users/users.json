@@ -2,21 +2,29 @@
   {
     "name": "Natasa",
     "id": 1,
-    "lastName": "NNNN"
+    "lastName": "NNNN",
+    "ocupation": "CTO",
+    "city": "Valjevo"
   },
   {
     "name": "Milos",
     "id": 2,
-    "lastName": "NNNN"
+    "lastName": "NNNN",
+    "ocupation": "CEO",
+    "city": "Novi Sad"
   },
   {
     "name": "Biljana",
     "id": 3,
-    "lastName": "NNNN"
+    "lastName": "NNNN",
+    "ocupation": "Software Developer",
+    "city": "Valjevo"
   },
   {
     "name": "Djordje",
     "id": 4,
-    "lastName": "NNNN"
+    "lastName": "NNNN",
+    "ocupation": "Project Manager",
+    "city": "Valjevo"
   }
 ]

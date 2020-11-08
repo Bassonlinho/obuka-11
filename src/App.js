@@ -87,6 +87,13 @@ export default class App extends React.Component {
     });
   };
 
+  onDeleteUser = (user) => {
+    let { users } = this.state;
+    this.setState({
+      users: users.filter((item) => item.id !== user.id),
+    });
+  };
+
   render() {
     const { users, loading, user } = this.state;
     let content;
@@ -95,7 +102,11 @@ export default class App extends React.Component {
     } else {
       content = (
         <div className="App">
-          <ListOfUsers users={users} onClickUser={this.onClickUser} />
+          <ListOfUsers
+            users={users}
+            onClickUser={this.onClickUser}
+            onDeleteUser={this.onDeleteUser}
+          />
           <AddUsers user={user} onAddUser={this.onAddUserFunction} />
         </div>
       );
