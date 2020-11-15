@@ -1,6 +1,9 @@
 import React from "react";
 import PropType from "prop-types";
 import User from "./User";
+import history from "../utils/history";
+import { ADD_USER } from "../routes";
+
 class ListOfUsers extends React.Component {
   render() {
     const { users, onClickUser, onDeleteUser } = this.props;
@@ -18,6 +21,7 @@ class ListOfUsers extends React.Component {
               </div>
             );
           })) || <h2>Users list is empty.</h2>}
+        <button onClick={() => history.push(ADD_USER)}>Create new user</button>
       </>
     );
   }

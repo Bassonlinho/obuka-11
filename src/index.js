@@ -5,15 +5,14 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter, Router } from "react-router-dom";
 //history je modul koji nam je potreban zbog browsovanja kroz aplikaciju, ukoliko je potrebna navigacija
-import { createBrowserHistory } from "history";
-
+import history from "./utils/history";
 ReactDOM.render(
   <React.StrictMode>
-    {/* <BrowserRouter>
-      <Router history={createBrowserHistory()}> */}
-    <App />
-    {/* </Router>
-    </BrowserRouter> */}
+    <BrowserRouter>
+      <Router history={history}>
+        <App />
+      </Router>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -1,5 +1,8 @@
 import React from "react";
 import { TextField, Button } from "@material-ui/core";
+import history from "../utils/history";
+import { LIST_OF_USERS } from "../routes";
+
 class AddUsers extends React.Component {
   constructor(props) {
     super(props);
@@ -38,12 +41,7 @@ class AddUsers extends React.Component {
     // } else {
     onAddUser(user);
     // }
-    this.setState({
-      user: {
-        name: "",
-        lastName: "",
-      },
-    });
+    history.replace(LIST_OF_USERS);
   };
 
   render() {

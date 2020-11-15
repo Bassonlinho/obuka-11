@@ -3,41 +3,54 @@ import "./App.css";
 import users from "./users/users.json";
 import AddUsers from "./users/AddUsers";
 import ListOfUsers from "./users/ListOfUsers";
+import ViewUser from "./users/ViewUser";
+import { Route, Redirect } from "react-router-dom";
+import { ADD_USER, VIEW_USER, EDIT_USER, LIST_OF_USERS } from "./routes";
+import history from "./utils/history";
 //bila je function,menjali smo u klasu zbog lifecycles
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       users: [],
-      loading: true,
       user: null,
+      loading: true,
     };
   }
 
   componentDidMount() {
     setTimeout(() => {
       this.setState({
-        users: users,
         loading: false,
+        users: users,
       });
     }, 2000);
+    // var nextState = {}
+    // const companies = await getCompanies();
+    // nextState = { companies: companies.data;}
+    // dobar nacin da se zaobidje vise setState u componentDidMount u koriscenju asinhronih poziva ka serveru
+    // ili unutar neke funkcije u kojoj je potrebno pozvati setState vise puta
   }
 
   // koristicemo kasnije za nesto drugo
   // componentDidUpdate(prevProps, prevState) {
   //   const { loading } = this.state;
+  //   const { hasNameChange } = this.props;
   //   let { users } = this.state;
   //   if (prevState.loading === true && prevState.loading !== loading) {
   //     users.push({ id: 10, name: "Petar", lastName: "petrovic" });
   //     this.setState({
   //       users: users,
   //     });
+  //     this.props.get/MoreUsers()
+  //     this.recalculatePages();
   //   }
   // }
 
-  // // brani pozivanja novog rendera
-  // shouldComponentUpdate(prevState, prevProps) {
+  // brani pozivanja novog rendera
+  // shouldComponentUpdate(prevProps, prevState) {
   //   const { loading } = this.state;
+  //   console.log("prevstate", prevState);
   //   if (prevState.loading !== loading) {
   //     return true; //dont call render
   //   }
@@ -82,9 +95,15 @@ export default class App extends React.Component {
   };
 
   onClickUser = (user) => {
-    this.setState({
-      user,
-    });
+    this.setState(
+      {
+        user,
+      },
+      // posle setState-a moze da prosledi funkcija sta da uradi nakon njegovog izvrsenja
+      () => {
+        history.push(VIEW_USER);
+      }
+    );
   };
 
   onDeleteUser = (user) => {
@@ -98,19 +117,33 @@ export default class App extends React.Component {
     const { users, loading, user } = this.state;
     let content;
     if (loading) {
-      content = <h1>Loading...</h1>;
-    } else {
-      content = (
-        <div className="App">
-          <ListOfUsers
-            users={users}
-            onClickUser={this.onClickUser}
-            onDeleteUser={this.onDeleteUser}
-          />
-          <AddUsers user={user} onAddUser={this.onAddUserFunction} />
-        </div>
-      );
+      return <h1>Loading...</h1>;
     }
-    return content;
+    return (
+      <>
+        <Route
+          path={LIST_OF_USERS}
+          exact
+          component={() => (
+            <ListOfUsers users={users} onClickUser={this.onClickUser} />
+          )}
+        />
+        <Route
+          path={VIEW_USER}
+          exact
+          component={() => <ViewUser user={user} />}
+        />
+        <Route
+          path={ADD_USER}
+          exact
+          component={() => (
+            <AddUsers user={user} onAddUser={this.onAddUserFunction} />
+          )}
+        />
+        {/* ako sam na listi usera, prikazi mi dugme za dodavanje novog usera
+         */}
+        <Redirect from="/" to={LIST_OF_USERS} />
+      </>
+    );
   }
 }
