@@ -10,7 +10,7 @@ import history from "./utils/history";
 //bila je function,menjali smo u klasu zbog lifecycles
 export default class App extends React.Component {
   constructor(props) {
-    super(props);
+    super();
     this.state = {
       users: [],
       user: null,
@@ -19,12 +19,22 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.setState({
-        loading: false,
-        users: users,
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((data) => {
+        //data je rezultat promisa nad Response-om od fetcha i pozivom json() nad njim
+        //https://developer.mozilla.org/en-US/docs/Web/API/Response
+        this.setState({
+          loading: false,
+          users: data,
+        });
+      })
+      .catch((error) => {
+        throw error;
+      })
+      .catch((error) => {
+        throw error;
       });
-    }, 2000);
     // var nextState = {}
     // const companies = await getCompanies();
     // nextState = { companies: companies.data;}
@@ -115,7 +125,6 @@ export default class App extends React.Component {
 
   render() {
     const { users, loading, user } = this.state;
-    let content;
     if (loading) {
       return <h1>Loading...</h1>;
     }
@@ -125,7 +134,11 @@ export default class App extends React.Component {
           path={LIST_OF_USERS}
           exact
           component={() => (
-            <ListOfUsers users={users} onClickUser={this.onClickUser} />
+            <ListOfUsers
+              users={users}
+              onClickUser={this.onClickUser}
+              onDeleteUser={this.onDeleteUser}
+            />
           )}
         />
         <Route
@@ -140,8 +153,6 @@ export default class App extends React.Component {
             <AddUsers user={user} onAddUser={this.onAddUserFunction} />
           )}
         />
-        {/* ako sam na listi usera, prikazi mi dugme za dodavanje novog usera
-         */}
         <Redirect from="/" to={LIST_OF_USERS} />
       </>
     );
