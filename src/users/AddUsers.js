@@ -9,10 +9,18 @@ class AddUsers extends React.Component {
     this.state = {
       user: {
         name: "",
-        lastName: "",
-        feakfjlek: "",
+        email: "",
       },
     };
+  }
+
+  //edit slucaj, kada hocemo da editujemo usera, na mount komponente ce se ucitati user u state-u
+  componentDidMount() {
+    console.log("Ja sam mauntovan AddUsers");
+    const { user } = this.props;
+    this.setState({
+      user: user,
+    });
   }
 
   // primer kako komponenta hendluje promenu propertija ukoliko se u parentu desi promena
@@ -60,8 +68,8 @@ class AddUsers extends React.Component {
         />
         <TextField
           label="Last name"
-          value={user.lastName}
-          onChange={(e) => this.handleChange("lastName", e.target.value)}
+          value={user.email}
+          onChange={(e) => this.handleChange("email", e.target.value)}
         />
         <Button onClick={() => this.handleAddUser()}>
           {user.id ? "Edit" : "Add"}

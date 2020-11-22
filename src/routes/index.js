@@ -1,4 +1,6 @@
-export const LIST_OF_USERS = "/list";
-export const ADD_USER = "/add-user";
-export const EDIT_USER = "/edit-user";
-export const VIEW_USER = "/view-user";
+const LIST_OF_USERS = "/";
+const ADD_USER = "/add-user";
+const EDIT_USER = "/edit-user";
+const VIEW_USER = "/view-user";
+
+export { LIST_OF_USERS, ADD_USER, EDIT_USER, VIEW_USER };

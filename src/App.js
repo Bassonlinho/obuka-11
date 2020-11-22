@@ -1,11 +1,10 @@
 import React from "react";
 import "./App.css";
-import users from "./users/users.json";
 import AddUsers from "./users/AddUsers";
 import ListOfUsers from "./users/ListOfUsers";
 import ViewUser from "./users/ViewUser";
 import { Route, Redirect } from "react-router-dom";
-import axios from "axios";
+import axios from "./utils/AxiosWrapper";
 import { ADD_USER, VIEW_USER, EDIT_USER, LIST_OF_USERS } from "./routes";
 import history from "./utils/history";
 //bila je function,menjali smo u klasu zbog lifecycles
@@ -20,16 +19,14 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get("https://jsonplaceholder.typicode.com/users")
-      .then((response) => {
-        console.log("response", response);
-        this.setState({
-          users: response.data,
-          loading: false,
-        });
-      })
-      .catch((error) => {});
+    //alternativa za fetch i kako kontrolisati greske sa servera preko
+    //Axioswrappera i interceptora
+    axios.get("https://jsonplaceholder.typicode.com/users").then((response) => {
+      this.setState({
+        users: response.data,
+        loading: false,
+      });
+    });
     // fetch("https://jsonplaceholder.typicode.com/users")
     //   .then((response) => response.json())
     //   .then((data) => {
@@ -54,17 +51,17 @@ export default class App extends React.Component {
   }
 
   // koristicemo kasnije za nesto drugo
-  // componentDidUpdate(prevProps, prevState) {
-  //   const { loading } = this.state;
-  //   const { hasNameChange } = this.props;
-  //   let { users } = this.state;
-  //   if (prevState.loading === true) {
-  //     users.push({ id: 10, name: "Petar", lastName: "petrovic" });
-  //     this.setState({
-  //       users: users,
-  //     });
-  //   }
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    // const { loading } = this.state;
+    // const { hasNameChange } = this.props;
+    // let { users } = this.state;
+    // if (prevState.loading === true) {
+    //   users.push({ id: 10, name: "Petar", lastName: "petrovic" });
+    //   this.setState({
+    //     users: users,
+    //   });
+    // }
+  }
 
   // brani pozivanja novog rendera
   // shouldComponentUpdate(prevProps, prevState) {
@@ -118,9 +115,8 @@ export default class App extends React.Component {
       {
         user,
       },
-      // posle setState-a moze da prosledi funkcija sta da uradi nakon njegovog izvrsenja
       () => {
-        history.push(VIEW_USER);
+        // history.push(VIEW_USER);
       }
     );
   };
@@ -162,7 +158,13 @@ export default class App extends React.Component {
             <AddUsers user={user} onAddUser={this.onAddUserFunction} />
           )}
         />
-        <Redirect from="/" to={LIST_OF_USERS} />
+        <Route
+          path={EDIT_USER}
+          exact
+          component={() => (
+            <AddUsers user={user} onAddUser={this.onAddUserFunction} />
+          )}
+        />
       </>
     );
   }

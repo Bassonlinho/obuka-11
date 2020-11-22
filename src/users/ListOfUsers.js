@@ -5,14 +5,18 @@ import history from "../utils/history";
 import { ADD_USER } from "../routes";
 
 class ListOfUsers extends React.Component {
+  componentDidMount() {
+    console.log("Ja sam mauntovan ListOfUsers", this.props);
+  }
   render() {
     const { users, onClickUser, onDeleteUser } = this.props;
     return (
       <>
         {(users.length &&
-          users.map((item) => {
+          users.map((item, index) => {
+            //each child in a list should  have a unique key property
             return (
-              <div className="user">
+              <div className="user" key={item.id.toString()}>
                 {/* to znaci da smo spredovali sve key: value propertije koje objekat item ima,
                 umesto toga smo mogli lastName={item.lastName}, name={item.name}  */}
                 <User {...item} />
