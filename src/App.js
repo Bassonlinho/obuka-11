@@ -5,6 +5,7 @@ import AddUsers from "./users/AddUsers";
 import ListOfUsers from "./users/ListOfUsers";
 import ViewUser from "./users/ViewUser";
 import { Route, Redirect } from "react-router-dom";
+import axios from "axios";
 import { ADD_USER, VIEW_USER, EDIT_USER, LIST_OF_USERS } from "./routes";
 import history from "./utils/history";
 //bila je function,menjali smo u klasu zbog lifecycles
@@ -19,22 +20,32 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.json())
-      .then((data) => {
-        //data je rezultat promisa nad Response-om od fetcha i pozivom json() nad njim
-        //https://developer.mozilla.org/en-US/docs/Web/API/Response
+    axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then((response) => {
+        console.log("response", response);
         this.setState({
+          users: response.data,
           loading: false,
-          users: data,
         });
       })
-      .catch((error) => {
-        throw error;
-      })
-      .catch((error) => {
-        throw error;
-      });
+      .catch((error) => {});
+    // fetch("https://jsonplaceholder.typicode.com/users")
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     //data je rezultat promisa nad Response-om od fetcha i pozivom json() nad njim
+    //     //https://developer.mozilla.org/en-US/docs/Web/API/Response
+    //     this.setState({
+    //       loading: false,
+    //       users: data,
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     throw error;
+    //   })
+    //   .catch((error) => {
+    //     throw error;
+    //   });
     // var nextState = {}
     // const companies = await getCompanies();
     // nextState = { companies: companies.data;}
@@ -47,13 +58,11 @@ export default class App extends React.Component {
   //   const { loading } = this.state;
   //   const { hasNameChange } = this.props;
   //   let { users } = this.state;
-  //   if (prevState.loading === true && prevState.loading !== loading) {
+  //   if (prevState.loading === true) {
   //     users.push({ id: 10, name: "Petar", lastName: "petrovic" });
   //     this.setState({
   //       users: users,
   //     });
-  //     this.props.get/MoreUsers()
-  //     this.recalculatePages();
   //   }
   // }
 

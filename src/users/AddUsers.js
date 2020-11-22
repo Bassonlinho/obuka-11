@@ -10,6 +10,7 @@ class AddUsers extends React.Component {
       user: {
         name: "",
         lastName: "",
+        feakfjlek: "",
       },
     };
   }
