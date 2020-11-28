@@ -5,9 +5,6 @@ import history from "../utils/history";
 import { ADD_USER } from "../routes";
 
 class ListOfUsers extends React.Component {
-  componentDidMount() {
-    console.log("Ja sam mauntovan ListOfUsers", this.props);
-  }
   render() {
     const { users, onClickUser, onDeleteUser } = this.props;
     return (

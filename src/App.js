@@ -1,5 +1,7 @@
 import React from "react";
 import "./App.css";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import AddUsers from "./users/AddUsers";
 import ListOfUsers from "./users/ListOfUsers";
 import ViewUser from "./users/ViewUser";
@@ -7,26 +9,25 @@ import { Route, Redirect } from "react-router-dom";
 import axios from "./utils/AxiosWrapper";
 import { ADD_USER, VIEW_USER, EDIT_USER, LIST_OF_USERS } from "./routes";
 import history from "./utils/history";
+import { getUsers } from "./reducers/usersReducer/actions";
 //bila je function,menjali smo u klasu zbog lifecycles
-export default class App extends React.Component {
+export class App extends React.Component {
   constructor(props) {
     super();
-    this.state = {
-      users: [],
-      user: null,
-      loading: true,
-    };
   }
 
   componentDidMount() {
+    const { getUsers } = this.props;
+    getUsers();
     //alternativa za fetch i kako kontrolisati greske sa servera preko
     //Axioswrappera i interceptora
-    axios.get("https://jsonplaceholder.typicode.com/users").then((response) => {
-      this.setState({
-        users: response.data,
-        loading: false,
-      });
-    });
+    //prebaceno u usersReducer
+    // axios.get("https://jsonplaceholder.typicode.com/users").then((response) => {
+    //   this.setState({
+    //     users: response.data,
+    //     loading: false,
+    //   });
+    // });
     // fetch("https://jsonplaceholder.typicode.com/users")
     //   .then((response) => response.json())
     //   .then((data) => {
@@ -129,7 +130,9 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { users, loading, user } = this.state;
+    // const { users, user } = this.state;
+    const { loading, users, user } = this.props;
+    console.log("this.props", this.props);
     if (loading) {
       return <h1>Loading...</h1>;
     }
@@ -169,3 +172,26 @@ export default class App extends React.Component {
     );
   }
 }
+
+// mapStateToProps je veza izmejdu komponente i reducera i podataka koji
+// su skladisteni u reduceru
+// kao parametar ima state kojem mozemo da pristupimo i cuvamo celo stanje applikacije u njemu
+
+const mapStateToProps = (stanje) => {
+  console.log("stanje", stanje);
+  return {
+    users: stanje.users.users,
+    user: stanje.users.user,
+    loading: stanje.users.loading,
+  };
+};
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      getUsers,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
