@@ -67,7 +67,7 @@ class AddUsers extends React.Component {
           //target je ono sto izvlacis, u ovom slucaju text field
         />
         <TextField
-          label="Last name"
+          label="Email"
           value={user.email}
           onChange={(e) => this.handleChange("email", e.target.value)}
         />

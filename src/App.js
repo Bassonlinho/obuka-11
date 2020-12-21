@@ -9,7 +9,7 @@ import { Route, Redirect } from "react-router-dom";
 import axios from "./utils/AxiosWrapper";
 import { ADD_USER, VIEW_USER, EDIT_USER, LIST_OF_USERS } from "./routes";
 import history from "./utils/history";
-import { getUsers } from "./reducers/usersReducer/actions";
+import { getUsers, addUser } from "./reducers/usersReducer/actions";
 //bila je function,menjali smo u klasu zbog lifecycles
 export class App extends React.Component {
   constructor(props) {
@@ -75,40 +75,42 @@ export class App extends React.Component {
   // }
 
   onAddUserFunction = (user) => {
-    let { users } = this.state;
-    // spread operator, za kopiranje niza i dodavanje novog elementa, zamena za array.push
-    //array.shift, array.unshift
-    // mozes se koristiti i za nizove i za objekte, u slucaju objekata mozes koristiti i Object.assign
-    // newUser = {...user, id: 10}
-    let userData;
-    //da li user objekat ima ID property, moze se pisati i if(Object(user).hasOwnProperty(id)),
-    // if(user.id !== undefined)
-    if (!user.id) {
-      // userData = Object.assign({id: Math.random() + 15}, user)
-      userData = {
-        id: Math.random() + 15,
-        ...user,
-      };
-      users = [...users, userData];
-    } else {
-      userData = user;
-      users = users.map((item) => {
-        if (item.id === userData.id) {
-          item = userData;
-          return item;
-        }
-        return item;
-      });
-      // moze i na ovaj nacin, ili da se izvlaci index iz array.map-a
-      // const indexOfUser = users.findIndex(userData);
-      // users[indexOfUser] = userData;
-    }
-    // users.push(user)
-    // users.unshift(user)
-    // const newUsers = [user, ...users];
-    this.setState({
-      users,
-    });
+    const { addUser } = this.props;
+    addUser(user);
+    // let { users } = this.state;
+    // // spread operator, za kopiranje niza i dodavanje novog elementa, zamena za array.push
+    // //array.shift, array.unshift
+    // // mozes se koristiti i za nizove i za objekte, u slucaju objekata mozes koristiti i Object.assign
+    // // newUser = {...user, id: 10}
+    // let userData;
+    // //da li user objekat ima ID property, moze se pisati i if(Object(user).hasOwnProperty(id)),
+    // // if(user.id !== undefined)
+    // if (!user.id) {
+    //   // userData = Object.assign({id: Math.random() + 15}, user)
+    //   userData = {
+    //     id: Math.random() + 15,
+    //     ...user,
+    //   };
+    //   users = [...users, userData];
+    // } else {
+    //   userData = user;
+    //   users = users.map((item) => {
+    //     if (item.id === userData.id) {
+    //       item = userData;
+    //       return item;
+    //     }
+    //     return item;
+    //   });
+    //   // moze i na ovaj nacin, ili da se izvlaci index iz array.map-a
+    //   // const indexOfUser = users.findIndex(userData);
+    //   // users[indexOfUser] = userData;
+    // }
+    // // users.push(user)
+    // // users.unshift(user)
+    // // const newUsers = [user, ...users];
+    // this.setState({
+    //   users,
+    // });
   };
 
   onClickUser = (user) => {
@@ -136,6 +138,10 @@ export class App extends React.Component {
     if (loading) {
       return <h1>Loading...</h1>;
     }
+
+    // child komponente koje su unutar komponente koja je nakacena na redux ne znaju za propertije
+    // koje parent komponenta dobija od reduxa (funkcije, props).
+    // ali moze da im pristupi ukoliko ih dobije od parenta (mada bi to trebalo da se koristi sa oprezom)
     return (
       <>
         <Route
@@ -173,10 +179,12 @@ export class App extends React.Component {
   }
 }
 
-// mapStateToProps je veza izmejdu komponente i reducera i podataka koji
+// mapStateToProps je veza izmedju komponente i reducera i podataka koji
 // su skladisteni u reduceru
 // kao parametar ima state kojem mozemo da pristupimo i cuvamo celo stanje applikacije u njemu
 
+//kada se promeni bilo koja od promenljivih koje "slusamo" iz reduxa, this.props ce registrovati
+// promenu i desice se rerender unutar te komponente
 const mapStateToProps = (stanje) => {
   console.log("stanje", stanje);
   return {
@@ -186,12 +194,25 @@ const mapStateToProps = (stanje) => {
   };
 };
 
+// da bi funkcija mogla da "komunicira" sa reduxom mora da se wrapuje u actionCreator
+// i poveze preko connecta kao drugi parametar
+
 const mapDispatchToProps = (dispatch) =>
+  // ovo je alternativa za ovo
+  // return {
+  //   getUsers: () => dispatch(getUsers()),
+  // }
+  //umesto da svugde koristimo dispatch(naziv_funkcije)
+  //bindActionCreators to radi za nas i olaksava nam
   bindActionCreators(
     {
       getUsers,
+      addUser,
     },
     dispatch
   );
-
+//connect ce se pozvati pre mauntovanja komponente i povezati komponentu sa funkcijama koje su
+//pozvane unutar nje, da bi bile iskoristljive vec u componentDidMount
+//connect je zapravo HOC (Higher order component), jer on koristi class App koji je exportovan
+//i od nje vraca novu komponentu koja je "viseg reda" jer moze da koristi usluge Reduxa.
 export default connect(mapStateToProps, mapDispatchToProps)(App);

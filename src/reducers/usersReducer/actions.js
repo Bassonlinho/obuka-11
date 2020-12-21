@@ -31,3 +31,12 @@ export const deleteUser = (id) => {
     });
   };
 };
+
+export const addUser = (user) => {
+  return (dispatch) => {
+    dispatch({
+      type: usersTypes.ADD_USER,
+      user: user,
+    });
+  };
+};

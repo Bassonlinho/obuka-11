@@ -5,4 +5,5 @@ import usersReducer from "./usersReducer";
 // Provideru da bi se koristilo kroz celu aplikaciju
 export default combineReducers({
   users: usersReducer,
+  //tvoj dat naziv reducera: importovan reducer
 });

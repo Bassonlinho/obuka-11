@@ -8,6 +8,7 @@ export const createReducer = (initialState, handlers) => {
     if (handlers.hasOwnProperty(action.type)) {
       return handlers[action.type](state, action);
     } else {
+      console.log("ovo ce se tri puta okinuti");
       return state;
     }
   };

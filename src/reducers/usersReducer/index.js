@@ -21,5 +21,12 @@ const usersReducer = createReducer(initialState, {
   [usersTypes.GET_USERS_FAILED](state, action) {
     return { ...state, loading: false, error: action.message };
   },
+  [usersTypes.ADD_USER](state, action) {
+    let user = { ...action.user };
+    user.website = "www.google.com";
+    user.username = "Bassonlinho";
+    user.id = Math.random();
+    return { ...state, users: [user, ...state.users] };
+  },
 });
 export default usersReducer;
